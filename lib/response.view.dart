@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class MyStatefulWidget extends StatefulWidget {
-  final String myArgument;
+  final String response;
   final String query;
 
   const MyStatefulWidget(
-      {Key? key, required this.myArgument, required this.query})
+      {Key? key, required this.response, required this.query})
       : super(key: key);
 
   @override
@@ -15,23 +15,23 @@ class MyStatefulWidget extends StatefulWidget {
 }
 
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
-  late Timer _timer;
-  final List<Widget> _widgets = [];
+  late Timer timer;
+  final List<Widget> widgets = [];
   List<String> items = [];
 
   @override
   void initState() {
     super.initState();
-    items = preprocess(widget.myArgument);
+    items = preprocess(widget.response);
     int ticks = 0;
 
-    _timer = Timer.periodic(const Duration(milliseconds: 400), (timer) {
+    timer = Timer.periodic(const Duration(milliseconds: 400), (timer) {
       setState(() {
         if (ticks >= items.length) {
-          _timer.cancel();
+          timer.cancel();
         } else {
-          _widgets.add(_buildRankingRow(
-              1, items[items.length - (_widgets.length + 1)], 100));
+          // Show ranking in reverse order. From 10 to 1.
+          widgets.add(buildRow(items[items.length - (widgets.length + 1)]));
           ticks += 1;
         }
       });
@@ -40,7 +40,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
   @override
   void dispose() {
-    _timer.cancel();
+    timer.cancel();
     super.dispose();
   }
 
@@ -77,10 +77,10 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 ListView.builder(
-                  itemCount: _widgets.length,
+                  itemCount: widgets.length,
                   shrinkWrap: true,
                   itemBuilder: ((context, index) {
-                    return _widgets[index];
+                    return widgets[index];
                   }),
                 ),
               ],
@@ -91,7 +91,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     );
   }
 
-  Widget _buildRankingRow(int rank, String name, int score) {
+  Widget buildRow(String name) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Text(

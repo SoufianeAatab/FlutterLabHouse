@@ -130,7 +130,7 @@ class FirstPage extends State<HomeScreen> {
                         });
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => MyStatefulWidget(
-                                  myArgument: value,
+                                  response: value,
                                   query: inputController.text,
                                 )));
                       });
